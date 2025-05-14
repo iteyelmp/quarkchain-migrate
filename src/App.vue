@@ -1,0 +1,89 @@
+<template>
+  <div>
+    <w3q-tip
+        style="width: 100vw"
+        bgColor="#52DEFF"
+        fontColor="#ffffff"
+        :fontSize="isMobile ? '12px' : '15px'"
+    />
+
+    <div id="app">
+      <el-container>
+        <el-header class="header">
+          <Header/>
+        </el-header>
+
+        <el-main :style="'min-height:'+ (fullHeight-195) +'px;'">
+          <router-view :key="$route.fullPath" />
+        </el-main>
+
+        <Footer/>
+      </el-container>
+    </div>
+  </div>
+</template>
+
+<script>
+import Header from "@/views/HeaderPage.vue";
+import Footer from "@/views/FooterPage.vue";
+
+export default {
+  name: 'App',
+  components: {
+    Header,
+    Footer
+  },
+  data() {
+    return {
+      fullHeight: document.documentElement.clientHeight,
+    }
+  },
+  computed:{
+    isMobile() {
+      return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+    }
+  },
+  watch: {
+    fullHeight(val) {
+      if (!this.timer) {
+        this.fullHeight = val;
+        this.timer = true;
+        let that = this;
+        setTimeout(function () {
+          that.timer = false;
+        }, 400)
+      }
+
+    }
+  },
+  mounted() {
+    this.getBodyHeight()
+  },
+  methods: {
+    getBodyHeight() {
+      const that = this
+      window.onresize = () => {
+        return (() => {
+          window.fullHeight = document.documentElement.clientHeight;
+          that.fullHeight = window.fullHeight;
+        })()
+      }
+    }
+  }
+}
+</script>
+
+<style>
+#app {
+  max-width: 1200px;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0 auto;
+}
+
+.header {
+  height: 64px !important;
+  padding: 5px 20px !important;
+}
+</style>
