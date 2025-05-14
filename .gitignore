@@ -27,3 +27,7 @@ coverage
 *.sln
 *.sw?
 /.env
+/solidity/.env
+/solidity/cache/
+/solidity/out/
+/solidity/broadcast/

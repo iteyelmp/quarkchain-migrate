@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin-upgradeable/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin-upgradeable/contracts/utils/PausableUpgradeable.sol";
+import "@openzeppelin-upgradeable/contracts/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -62,8 +62,8 @@ contract TokenConversion is
         startTime = _startTime;
         endTime = _endTime;
 
-        _setupRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
-        _setupRole(PAUSER_ROLE, defaultAdmin);
+        _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
+        _grantRole(PAUSER_ROLE, defaultAdmin);
     }
 
     /**
