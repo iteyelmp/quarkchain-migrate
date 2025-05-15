@@ -13,6 +13,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.10",
     "buefy": "^0.9.29",
     "element-ui": "^2.15.14",
+    "ethers": "^6.14.0",
     "sass": "^1.88.0",
     "sass-loader": "^16.0.5",
     "vue": "^2.6.14",

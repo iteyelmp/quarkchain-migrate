@@ -11,6 +11,7 @@ import 'buefy/dist/buefy.css';
 import './assets/main.css'
 import './assets/font/font.css';
 
+import { initWalletEvents } from '@/utils/walletManager';
 
 Vue.use(Element)
 Vue.use(Buefy);
@@ -21,3 +22,5 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app');
+
+initWalletEvents();
