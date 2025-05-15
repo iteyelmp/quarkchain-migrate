@@ -25,16 +25,10 @@ export default {
 </script>
 
 <style lang="scss">
-// Import Bulma's core
-@import "~bulma/sass/utilities/_all";
-
-$family-sans-serif: KGBrokenVesselsSketch;
-// Import Bulma and Buefy styless
-@import "~bulma";
-@import "~buefy/src/scss/buefy";
-
 .nav-container {
-  background: transparent;
+  margin: 0 auto;
+  max-width: 1400px;
+  background: transparent !important;
 }
 
 .connection {

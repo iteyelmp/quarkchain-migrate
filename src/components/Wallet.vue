@@ -7,12 +7,10 @@
     >
       Connect
     </button>
-    <div v-else class="user">
-      <div class="account">
-        {{ this.accountShort }}
-        &nbsp;|&nbsp;
-        {{ "QuarkChain L2 Testnet" }}
-      </div>
+    <div v-else class="account">
+      {{ this.accountShort }}
+      &nbsp;|&nbsp;
+      {{ "Ethereum" }}
     </div>
   </div>
 </template>
@@ -21,16 +19,8 @@
 import { mapActions } from "vuex";
 import { chains } from '@/store/state';
 
-export class UnsupportedChainIdError extends Error {
-  constructor() {
-    super('UnsupportedChainIdError: not support chain')
-  }
-}
-
 const chain = 3335;
 const chainID = `0x${chain.toString(16)}`;
-const nodes = ['https://rpc.beta.testnet.l2.quarkchain.io:8545']
-const explorers = [`https://explorer.beta.testnet.l2.quarkchain.io/`];
 
 export default {
   name: "WalletComponent",
@@ -61,7 +51,7 @@ export default {
     ...mapActions(["setChainConfig", "setAccount"]),
     connectWallet() {
       if (!window.ethereum) {
-        this.$message.error('Can\'t setup the QuarkChain L2 Testnet on metamask because window.ethereum is undefined');
+        this.$message.error('Can\'t setup the Network because window.ethereum is undefined');
         return;
       }
       this.login();
@@ -81,16 +71,6 @@ export default {
       }
     },
     async handleAccountsChanged(accounts) {
-      // chain
-      const newChainId = await window.ethereum.request({ method: "eth_chainId" });
-      if (chainID !== newChainId) {
-        //  not support chain
-        this.setChainConfig({});
-      } else {
-        const c = chains.find((v) => v.chainID === chainID);
-        this.setChainConfig(JSON.parse(JSON.stringify(c)));
-      }
-
       // account
       if (accounts.length === 0) {
         this.currentAccount = null;
@@ -100,67 +80,31 @@ export default {
         );
         return;
       }
-      if (chainID !== newChainId) {
-        this.currentAccount = null;
-        this.setAccount(null);
-        throw new UnsupportedChainIdError();
-      }
-
       if (accounts[0] !== this.currentAccount) {
         this.currentAccount = accounts[0];
         this.setAccount(accounts[0]);
       }
     },
     async login() {
-      window.ethereum
-          .request({ method: "eth_requestAccounts" })
-          .then(this.handleAccountsChanged)
-          .catch(async (error) => {
-            if (error.code === 4001) {
-              this.$message.error('User rejected');
-            } else if (error instanceof UnsupportedChainIdError) {
-              const hasSetup = await this.setupNetwork();
-              if (hasSetup) {
-                await this.login();
-              }
-            } else {
-              this.$message.error('Connect Error');
-            }
+      try {
+        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+        if (currentChainId !== chainID) {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: chainID }],
           });
-    },
-    async setupNetwork() {
-      const provider = window.ethereum;
-      if (provider) {
-        try {
-          await provider.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainId: chainID,
-                chainName: 'QuarkChain L2 Testnet',
-                nativeCurrency: {
-                  name: 'QKC',
-                  symbol: 'QKC',
-                  decimals: 18,
-                },
-                rpcUrls: nodes,
-                blockExplorerUrls: explorers,
-              },
-            ],
-          })
-          const newChainId = await window.ethereum.request({method: "eth_chainId"});
-          if (chainID !== newChainId) {
-            this.$message.error('User rejected');
-            return false;
-          }
-          return true;
-        } catch (error) {
-          this.$message.error('Failed to setup the network in Metamask');
-          return false
         }
-      } else {
-        this.$message.error('Can\'t setup the QuarkChain L2 Testnet on metamask because window.ethereum is undefined');
-        return false
+
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        this.handleAccountsChanged(accounts);
+      } catch (error) {
+        if (error.code === 4001) {
+          this.$message.error('User rejected');
+        } else {
+          this.$message.error('Connect Error: ' + error.message);
+        }
       }
     },
   },
@@ -173,9 +117,20 @@ export default {
   justify-content: center;
 }
 
-.user{
-  display: flex;
-  flex-direction: row;
+.btn-connect {
+  cursor: pointer;
+  transition: all 0.1s ease 0s;
+  width: 120px;
+  height: 44px;
+  color: #ffffff;
+  font-size: 18px;
+  border: 0;
+  background: rgb(24, 30, 169);
+  border-radius: 36px;
+}
+.btn-connect:hover {
+  background-color: rgba(24, 30, 169, 0.7);
+  border: 0;
 }
 
 .account {
@@ -183,24 +138,9 @@ export default {
   font-size: 15px;
   line-height: 38px;
   background: #FFFFFF;
-  border-radius: 36px;
-  border: 1px solid #E8E6F2;
+  border: 1px solid #6D71CB;
+  color: #1722a2;
   padding: 0 15px;
   text-align: center;
-}
-
-.btn-connect {
-  transition: all 0.1s ease 0s;
-  width: 120px;
-  height: 44px;
-  color: #ffffff;
-  font-size: 18px;
-  border: 0;
-  background: #52DEFF;
-  border-radius: 36px;
-}
-.btn-connect:hover {
-  background-color: #52DEFF90;
-  border: 0;
 }
 </style>

@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.so
 contract TokenConversionScript is Script {
     address constant OLD_QKC = 0x1234567890123456789012345678901234567890;
     address constant NEW_QKC = 0xABcdEFABcdEFabcdEfAbCdefabcdeFABcDEFabCD;
-    uint256 constant START_TIME = 1_713_000_000; // 示例时间戳
+    uint256 constant START_TIME = 1_713_000_000;
     uint256 constant END_TIME = 1_723_000_000;
 
     function run() public {

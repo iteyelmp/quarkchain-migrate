@@ -2,7 +2,7 @@
   <div>
     <w3q-tip
         style="width: 100vw"
-        bgColor="#52DEFF"
+        bgColor="#1722a2"
         fontColor="#ffffff"
         :fontSize="isMobile ? '12px' : '15px'"
     />
@@ -13,7 +13,7 @@
           <Header/>
         </el-header>
 
-        <el-main :style="'min-height:'+ (fullHeight-195) +'px;'">
+        <el-main :style="'min-height:'+ (fullHeight-100-82) +'px;'">
           <router-view :key="$route.fullPath" />
         </el-main>
 
@@ -75,7 +75,7 @@ export default {
 
 <style>
 #app {
-  max-width: 1200px;
+  background: #FAFCFF;
   text-align: center;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -1,15 +1,8 @@
 <template>
   <div class="footer-div">
-    <div class="footer-bg"/>
-    <div class="footer-top" data-aos="fade-up">
-      <div class="subscribe-title">Join us in powering the future with the Super World Computer.</div>
-      <el-button class="sub-button" @click="goTelegram">
-        Join Us
-      </el-button>
-    </div>
     <div class="footer-b">
       <div class="footer-b-text">BUILT BY QUARKCHAIN WITH ❤️️</div>
-      <div  class="foot-img">
+      <div class="foot-img">
         <img class="footer-b-img" src="@/assets/discord.svg" @click="goDiscord"/>
         <img class="footer-b-img2" src="@/assets/twitter.svg" @click="goTwitter"/>
       </div>
@@ -27,9 +20,6 @@ export default {
     goDiscord(){
       window.open('https://discord.com/invite/GbkGhY3qkh', "_blank");
     },
-    goTelegram(){
-      window.open('https://t.me/quarkchainio', "_blank");
-    },
   }
 };
 </script>
@@ -38,69 +28,12 @@ export default {
 .footer-div {
   position: relative;
   width: 100%;
-  height: 300px;
-  background: #FAFCFF;
-  overflow: hidden;
+  height: 82px;
 }
-
-.footer-bg {
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  transform: translate(-50%, -40%);
-  width: 2607px;
-  height: 1299px;
-  border-radius: 2607px;
-  opacity: 0.7;
-  background: radial-gradient(42.16% 42.16% at 50.02% 56.61%, #C8D6FF 0%, rgba(250, 250, 255, 0.00) 100%);
-}
-
-.footer-top {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  .subscribe-title {
-    color: #090909;
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 116%;
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: CoinbaseDisplay;
-  }
-
-  .sub-button {
-    margin-top: 28px;
-    padding: 16px;
-    width: 199px;
-    border-radius: 12px;
-    background: #648BFD;
-    box-shadow: -2px 1px 4px 0px rgba(129, 129, 147, 0.15);
-
-    color: #FFF;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 116%;
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: CoinbaseDisplay;
-  }
-  .sub-button:focus,
-  .sub-button:hover {
-    color: #FFFFFF;
-    background: #7EACFC;
-  }
-}
-
 
 .footer-b {
-  padding: 0 25px 42px;
   max-width: 1200px;
-  margin: 110px auto;
+  margin: 20px auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
