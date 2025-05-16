@@ -1,5 +1,6 @@
 export const chains = [{
   chainID: '0xd07',
-  FileBoxController:'0x6b24c17f47aaac711d1a0d8A2ED49fafB414Caca',
-  FlatDirectory: '0x93110Da46fEDaB471A1762D8aC1d5F080B033E6A',
+  Conversion: '0x942fe5f5BBaE21944D88E52095402929167000bc',
+  OldToken: '0x31F73D1E61107bcE365A5c19689a516de1B07434',
+  NewToken: '0x7F926B6BCD8C0ed05a254d875985050917EAc5a2'
 }];
