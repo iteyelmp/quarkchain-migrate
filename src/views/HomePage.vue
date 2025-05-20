@@ -29,9 +29,13 @@
       </div>
 
       <div class="convert-margin">
-        <button class="convert-button" @click="clickButton" :disabled="isButtonDisabled">
+        <el-button
+            class="convert-button"
+            @click="clickButton"
+            :loading="isLoading"
+            :disabled="isButtonDisabled">
           {{ buttonStr }}
-        </button>
+        </el-button>
       </div>
     </div>
   </div>
@@ -40,13 +44,16 @@
 <script>
 import {ethers} from 'ethers';
 import {connectWallet} from "@/utils/walletManager";
-import {getErc20Balance} from "@/utils/web3";
+import {approveErc20, convert, getErc20Allowance, getErc20Balance} from "@/utils/web3";
 
 export default {
   data() {
     return {
       oldBalance: 0n,
       newBalance: 0n,
+      allowance: 0n,
+      isFetching: false,
+      isLoading: false
     }
   },
   computed: {
@@ -84,11 +91,14 @@ export default {
       if (this.oldBalance === 0n) {
         return "You don't have any QKC tokens";
       }
+      if (this.allowance < this.oldBalance) {
+        return "Approve";
+      }
       return "Convert";
     },
 
     isButtonDisabled() {
-      return this.account || this.oldBalance > 0n;
+      return !!this.account && this.oldBalance <= 0n;
     },
 
     Conversion() {
@@ -119,21 +129,60 @@ export default {
       if (!this.account) {
         return;
       }
-      const [oldToken, newToken] = await Promise.all([
-        getErc20Balance(this.OldToken, this.account),
-        getErc20Balance(this.NewToken, this.account),
-      ]);
-      this.oldBalance = oldToken;
-      this.newBalance = newToken;
+      if (this.isFetching) {
+        console.log("Skip fetch: already in progress");
+        return;
+      }
+      this.isFetching = true;
+      try {
+        const [oldToken, newToken, allowance] = await Promise.all([
+          getErc20Balance(this.OldToken, this.account),
+          getErc20Balance(this.NewToken, this.account),
+          getErc20Allowance(this.OldToken, this.account, this.Conversion)
+        ]);
+        this.oldBalance = oldToken;
+        this.newBalance = newToken;
+        this.allowance = allowance;
+      } finally {
+        this.isFetching = false;
+      }
     },
-    clickButton() {
+    async clickButton() {
       if (!this.account) {
-        connectWallet(this.$message);
+        await connectWallet(this.$message);
         return;
       }
       if (this.oldBalance <= 0n) {
         return;
       }
+
+      const runWithLoading = async (fn, successMsg) => {
+        this.isLoading = true;
+        try {
+          await fn();
+          if (successMsg) this.$message.success(successMsg);
+        } catch (error) {
+          console.error(error);
+          this.$message.error("An unexpected error occurred.");
+        } finally {
+          this.isLoading = false;
+          await this.fetchBalances();
+        }
+      };
+
+      if (this.allowance < this.oldBalance) {
+        // approve
+        await runWithLoading(
+            () => approveErc20(this.OldToken, this.Conversion),
+            "Approval successful!"
+        );
+        return;
+      }
+
+      await runWithLoading(
+          () => convert(this.Conversion),
+          "Conversion completed successfully!"
+      );
     }
   },
   mounted() {
@@ -165,7 +214,7 @@ export default {
 }
 
 .home-message {
-  padding: 25px 35px;
+  padding: 22px 35px;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -179,7 +228,7 @@ export default {
 
 .home-convert {
   margin-top: 25px;
-  padding: 24px 35px;
+  padding: 22px 35px;
   border: 1px solid rgba(24, 30, 169, 0.3);
 
   .row-layout {
@@ -189,7 +238,7 @@ export default {
   }
 
   .convert-margin {
-    margin-top: 14px;
+    margin-top: 18px;
   }
 
   .convert-title {

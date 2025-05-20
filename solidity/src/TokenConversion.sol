@@ -99,7 +99,13 @@ contract TokenConversion is
 
         // transfer and burn erc20In tokens
         IERC20(erc20In).safeTransferFrom(sender, address(this), erc20InBalance);
-        IERC20(erc20In).safeTransfer(address(0), erc20InBalance); // pseudo-burn
+        // Do NOT send tokens to address(0).
+        // Many ERC20 implementations treat address(0) as an invalid receiver
+        // and will revert the transaction to prevent misuse or accidental loss.
+        //
+        // Instead, use the "dead" address (0x000...dEaD) which is a known burn address
+        // with no private key and is used for pseudo-burning tokens.
+        IERC20(erc20In).safeTransfer(0x000000000000000000000000000000000000dEaD, erc20InBalance);
 
         IERC20(erc20Out).safeTransfer(sender, erc20InBalance);
 
