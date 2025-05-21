@@ -2,9 +2,10 @@
   <div class="home-container">
     <p class="home-title">QuarkChain Token Migrator</p>
     <p class="home-message">
-      Migrate your Old QKC tokens to New QKC tokens at a 1:1 ratio starting Dec 20, 2025 18:00. Migration will end on
-      Dec 20, 2025 18:00. View your QKC balance, and complete the migration before the deadline. If you need help, visit
-      our FAQ or contact support.
+      Migrate your QKC (v1) tokens to QKC (v2) tokens at a 1:1 ratio starting Dec 20, 2025 18:00. Migration will end on
+      Dec 20, 2025 18:00. View your QKC balance, and complete the migration before the deadline. For more information,
+      please visit this <a target="_blank" style="text-decoration: underline;"
+        href="https://snapshot.box/#/s:quarkchain-org.eth/proposal/0x9480eb4b37541a6bb60df4975def4adf61fe988f81e7965e539cd58d19a55d47">link</a>.
     </p>
     <div class="home-convert">
       <div class="row-layout">
@@ -89,7 +90,7 @@ export default {
         return "Connect Wallet"
       }
       if (this.oldBalance === 0n) {
-        return "You don't have any QKC tokens";
+        return "You don't have any QKC (v1) tokens";
       }
       if (this.allowance < this.oldBalance) {
         return "Approve";
