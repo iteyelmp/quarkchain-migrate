@@ -6,7 +6,7 @@
           <Header/>
         </el-header>
 
-        <el-main :style="'min-height:'+ (fullHeight-64-82) +'px;'">
+        <el-main :style="'min-height:'+ (fullHeight-90-82) +'px;'">
           <router-view :key="$route.fullPath" />
         </el-main>
 
@@ -71,7 +71,16 @@ export default {
 }
 
 .header {
+  margin-top: 26px;
   height: 64px !important;
   padding: 5px 20px !important;
+}
+
+@media screen and (max-width: 420px) {
+  .header {
+    margin-top: 10px;
+    height: 64px !important;
+    padding: 5px 15px !important;
+  }
 }
 </style>

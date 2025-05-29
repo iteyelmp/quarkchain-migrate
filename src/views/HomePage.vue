@@ -313,7 +313,7 @@ export default {
 @media screen and (max-width: 500px) {
   .home-container {
     width: 95%;
-    margin: 60px auto;
+    margin: 20px auto;
     padding: 0;
   }
 

@@ -26,8 +26,9 @@ export default {
 
 <style lang="scss">
 .nav-container {
-  margin: 30px auto 0;
+  margin: 0 auto;
   max-width: 1400px;
+  height: 64px;
   background: transparent !important;
 }
 

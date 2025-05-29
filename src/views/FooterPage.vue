@@ -89,48 +89,20 @@ export default {
     height: auto;
   }
 
-  .footer-bg {
-    position: absolute;
-    left: 50%;
-    top: 100%;
-    transform: translate(-50%, -40%);
-    width: 2607px;
-    height: 1299px;
-    border-radius: 2607px;
-    opacity: 0.75;
-    background: radial-gradient(42.16% 42.16% at 50.02% 56.61%, #BFC1F5 0%, rgba(250, 250, 255, 0.00) 100%);
-  }
-
-  .footer-top {
-    width: 90%;
-
-    .subscribe-title {
-      margin-top: 60px;
-      font-size: 24px;
-    }
-
-    .sub-button {
-      margin-top: 48px;
-      width: 140px;
-    }
-  }
-
-
   .footer-b {
-    padding: 0 0 42px;
-    width: 90%;
+    padding: 0 0 30px;
+    width: 92%;
     margin: 48px auto 0;
 
     .footer-b-text {
       font-size: 10px;
     }
-    .footer-b-img2 {
-      width: 36px;
-      height: 36px;
-    }
-    .footer-b-img2 {
-      width: 34px;
-      height: 30px;
+
+    .foot-img {
+      .foot-link {
+        font-size: 11px;
+        margin-right: 10px;
+      }
     }
   }
 }
