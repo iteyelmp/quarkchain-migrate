@@ -12,4 +12,5 @@ echo "🚀 Deploying TokenConversion..."
 forge script script/DeployTokenConversion.s.sol \
   --rpc-url "$RPC_URL" \
   --private-key "$PRIVATE_KEY_DEPLOYER" \
-  --broadcast
+  --broadcast \
+  --verify

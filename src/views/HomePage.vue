@@ -5,7 +5,7 @@
       To seamlessly integrate QuarkChain with Ethereum’s rollup infrastructure, the original ERC-20 QKC token (v1) will
       be migrated to a new ERC-20 QKC token (v2) at a 1:1 ratio. This new token will replace the existing one and serve
       as the official bridge token between Ethereum and QuarkChain Layer 2. For more details, please visit [<a
-        target="_blank" style="text-decoration: underline;"
+        target="_blank" class="message-a"
         href="https://snapshot.box/#/s:quarkchain-org.eth/proposal/0x9480eb4b37541a6bb60df4975def4adf61fe988f81e7965e539cd58d19a55d47">this
       link</a>].
     </p>
@@ -210,6 +210,16 @@ export default {
   margin-bottom: 3px;
   text-align: left;
   border: 1px solid rgba(24, 30, 169, 0.6);
+
+  .message-a {
+    text-decoration: underline;
+    background: transparent;
+
+    &:hover {
+      color: #648BFD;
+    }
+  }
+
 }
 
 .home-convert {

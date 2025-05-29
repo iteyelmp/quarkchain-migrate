@@ -8,6 +8,7 @@ output=$(forge script script/TokenDeployScript.s.sol:TokenDeployScript \
   --rpc-url "$RPC_URL" \
   --private-key "$PRIVATE_KEY_DEPLOYER" \
   --broadcast \
+  --verify
   2>&1 | tee /dev/tty)
 
 old_token=$(echo "$output" | grep "oldQKC:" | awk '{print $2}')

@@ -3,6 +3,7 @@
     <div class="footer-b">
       <div class="footer-b-text">BUILT BY QUARKCHAIN WITH ❤️️</div>
       <div class="foot-img">
+        <span v-if="this.Conversion" class="etherscan-link" @click="goEtherscan">View Contract</span>
         <img class="footer-b-img" src="@/assets/discord.svg" @click="goDiscord"/>
         <img class="footer-b-img2" src="@/assets/twitter.svg" @click="goTwitter"/>
       </div>
@@ -13,6 +14,11 @@
 <script>
 export default {
   name: "FooterPage",
+  computed: {
+    Conversion() {
+      return this.$store.state.chainConfig?.Conversion || null;
+    },
+  },
   methods: {
     goTwitter(){
       window.open('https://x.com/quark_chain', "_blank");
@@ -20,6 +26,12 @@ export default {
     goDiscord(){
       window.open('https://discord.com/invite/GbkGhY3qkh', "_blank");
     },
+    goEtherscan() {
+      if (!this.Conversion) {
+        return;
+      }
+      window.open('https://sepolia.etherscan.io/address/' + this.Conversion + '#code', "_blank");
+    }
   }
 };
 </script>
@@ -57,14 +69,29 @@ export default {
     align-items: center;
     .footer-b-img {
       cursor: pointer;
-      width: 42px;
-      height: 42px;
+      width: 30px;
+      height: 30px;
       margin-right: 18px
     }
     .footer-b-img2 {
       cursor: pointer;
-      width: 36.79px;
-      height: 32.702px;
+      width: 22px;
+      height: 22px;
+      margin-right: 18px
+    }
+
+    .etherscan-link {
+      cursor: pointer;
+      color: #1722A2;
+      font-size: 14px;
+      font-weight: 600;
+      margin-right: 18px;
+      text-decoration: underline;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #648BFD;
+      }
     }
   }
 }
