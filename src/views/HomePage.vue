@@ -1,14 +1,21 @@
 <template>
   <div class="home-container">
     <p class="home-title">QuarkChain ERC20 Token Migration</p>
-    <p class="home-message">
-      To seamlessly integrate QuarkChain with Ethereum’s rollup infrastructure, the original ERC-20 QKC token (v1) will
-      be migrated to a new ERC-20 QKC token (v2) at a 1:1 ratio. This new token will replace the existing one and serve
-      as the official bridge token between Ethereum and QuarkChain Layer 2. For more details, please visit [<a
-        target="_blank" class="message-a"
-        href="https://snapshot.box/#/s:quarkchain-org.eth/proposal/0x9480eb4b37541a6bb60df4975def4adf61fe988f81e7965e539cd58d19a55d47">this
-      link</a>].
-    </p>
+    <div class="home-message">
+      <p>
+        To seamlessly integrate QuarkChain with Ethereum’s rollup infrastructure, the original ERC-20 QKC token (v1)
+        needs to be migrated to a new ERC-20 QKC token (v2) at a 1:1 ratio.
+      </p>
+
+      <p style="margin-top: 15px">
+        This new token will replace the existing one and serve as the official bridge token between Ethereum and
+        QuarkChain Layer 2. For more details, please visit
+        <a target="_blank" class="message-a"
+           href="https://snapshot.box/#/s:quarkchain-org.eth/proposal/0x9480eb4b37541a6bb60df4975def4adf61fe988f81e7965e539cd58d19a55d47">
+          this link
+        </a>.
+      </p>
+    </div>
     <div class="home-convert">
       <div class="row-layout">
         <p class="convert-title">QKC (v1)</p>
@@ -21,6 +28,13 @@
         <p class="convert-title">QKC (v2)</p>
         <div class="convert-value convert-value-new">
           {{ this.newBalStr }} QKC
+        </div>
+      </div>
+
+      <div class="row-layout convert-margin">
+        <p class="convert-title">Address</p>
+        <div class="convert-value">
+          {{ this.accountStr }}
         </div>
       </div>
 
@@ -82,7 +96,16 @@ export default {
       }
       return "Convert";
     },
-
+    accountStr() {
+      if (this.account) {
+        return this.account.substring(0, 6) + "..." + this.account.substring(
+            this.account.length - 4,
+            this.account.length
+        )
+      } else {
+        return "-";
+      }
+    },
     isButtonDisabled() {
       return !!this.account && this.oldBalance <= 0n;
     },
@@ -320,7 +343,7 @@ export default {
     .convert-button {
       width: 100%;
       font-weight: 350;
-      font-size: 11px;
+      font-size: 12px;
       line-height: 15px;
       letter-spacing: 1px;
       padding: 16px 5px;

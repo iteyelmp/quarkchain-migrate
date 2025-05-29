@@ -3,9 +3,9 @@
     <div class="footer-b">
       <div class="footer-b-text">BUILT BY QUARKCHAIN WITH ❤️️</div>
       <div class="foot-img">
-        <span v-if="this.Conversion" class="etherscan-link" @click="goEtherscan">View Contract</span>
-        <img class="footer-b-img" src="@/assets/discord.svg" @click="goDiscord"/>
-        <img class="footer-b-img2" src="@/assets/twitter.svg" @click="goTwitter"/>
+        <span v-if="this.Conversion" class="foot-link" @click="goEtherscan">Contract</span>
+        <span class="foot-link" @click="goTwitter">Twitter</span>
+        <span class="foot-link" @click="goDiscord">Discord</span>
       </div>
     </div>
   </div>
@@ -67,20 +67,8 @@ export default {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    .footer-b-img {
-      cursor: pointer;
-      width: 30px;
-      height: 30px;
-      margin-right: 18px
-    }
-    .footer-b-img2 {
-      cursor: pointer;
-      width: 22px;
-      height: 22px;
-      margin-right: 18px
-    }
 
-    .etherscan-link {
+    .foot-link {
       cursor: pointer;
       color: #1722A2;
       font-size: 14px;
