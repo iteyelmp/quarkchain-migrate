@@ -1,11 +1,13 @@
 <template>
   <div class="home-container">
-    <p class="home-title">QuarkChain Token Migrator</p>
+    <p class="home-title">QuarkChain ERC20 Token Migration</p>
     <p class="home-message">
-      Migrate your QKC (v1) tokens to QKC (v2) tokens at a 1:1 ratio starting Dec 20, 2025 18:00. Migration will end on
-      Dec 20, 2025 18:00. View your QKC balance, and complete the migration before the deadline. For more information,
-      please visit this <a target="_blank" style="text-decoration: underline;"
-        href="https://snapshot.box/#/s:quarkchain-org.eth/proposal/0x9480eb4b37541a6bb60df4975def4adf61fe988f81e7965e539cd58d19a55d47">link</a>.
+      To seamlessly integrate QuarkChain with Ethereum’s rollup infrastructure, the original ERC-20 QKC token (v1) will
+      be migrated to a new ERC-20 QKC token (v2) at a 1:1 ratio. This new token will replace the existing one and serve
+      as the official bridge token between Ethereum and QuarkChain Layer 2. For more details, please visit [<a
+        target="_blank" style="text-decoration: underline;"
+        href="https://snapshot.box/#/s:quarkchain-org.eth/proposal/0x9480eb4b37541a6bb60df4975def4adf61fe988f81e7965e539cd58d19a55d47">this
+      link</a>].
     </p>
     <div class="home-convert">
       <div class="row-layout">
@@ -19,13 +21,6 @@
         <p class="convert-title">QKC (v2)</p>
         <div class="convert-value convert-value-new">
           {{ this.newBalStr }} QKC
-        </div>
-      </div>
-
-      <div class="row-layout convert-margin">
-        <p class="convert-title">Address</p>
-        <div class="convert-value">
-          {{ this.accountStr }}
         </div>
       </div>
 
@@ -60,16 +55,6 @@ export default {
   computed: {
     account() {
       return this.$store.state.account;
-    },
-    accountStr() {
-      if (this.account) {
-        return this.account.substring(0, 6) + "..." + this.account.substring(
-            this.account.length - 4,
-            this.account.length
-        )
-      } else {
-        return "-";
-      }
     },
     oldBalStr() {
       if (this.account) {
@@ -218,8 +203,8 @@ export default {
   padding: 22px 35px;
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 18px;
+  font-size: 15px;
+  line-height: 19px;
   color: rgb(24, 30, 169);
   opacity: 0.8;
   margin-bottom: 3px;
@@ -291,4 +276,45 @@ export default {
     cursor: not-allowed;
   }
 }
-</style>
+
+@media screen and (max-width: 500px) {
+  .home-container {
+    width: 95%;
+    margin: 60px auto;
+    padding: 0;
+  }
+
+  .home-title {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 14px;
+  }
+
+  .home-message {
+    padding: 15px 24px;
+    font-size: 14px;
+    margin-top: 25px;
+  }
+
+  .home-convert {
+    padding: 15px 24px;
+
+    .convert-title {
+      font-size: 15px;
+    }
+
+    .convert-value {
+      font-size: 14px;
+    }
+
+    .convert-button {
+      width: 100%;
+      font-weight: 350;
+      font-size: 11px;
+      line-height: 15px;
+      letter-spacing: 1px;
+      padding: 16px 5px;
+    }
+  }
+}
+</style>s

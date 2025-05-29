@@ -1,19 +1,12 @@
 <template>
   <div>
-    <w3q-tip
-        style="width: 100vw"
-        bgColor="#1722a2"
-        fontColor="#ffffff"
-        :fontSize="isMobile ? '12px' : '15px'"
-    />
-
     <div id="app">
       <el-container>
         <el-header class="header">
           <Header/>
         </el-header>
 
-        <el-main :style="'min-height:'+ (fullHeight-100-82) +'px;'">
+        <el-main :style="'min-height:'+ (fullHeight-64-82) +'px;'">
           <router-view :key="$route.fullPath" />
         </el-main>
 
@@ -36,11 +29,6 @@ export default {
   data() {
     return {
       fullHeight: document.documentElement.clientHeight,
-    }
-  },
-  computed:{
-    isMobile() {
-      return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
     }
   },
   watch: {
