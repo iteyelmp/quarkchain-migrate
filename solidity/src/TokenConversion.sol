@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import "./IOptimismPortal2.sol";
+
 contract TokenConversion is
     Initializable,
     PausableUpgradeable,
@@ -18,7 +20,7 @@ contract TokenConversion is
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
     address public erc20In;
-    address public erc20Out;
+    address public optimismPortal2;
     uint256 public startTime;
     uint256 public endTime;
 
@@ -32,7 +34,7 @@ contract TokenConversion is
 
     function initialize(
         address _erc20In,
-        address _erc20Out,
+        address _optimismPortal2,
         uint256 _startTime,
         uint256 _endTime,
         address defaultAdmin
@@ -45,8 +47,8 @@ contract TokenConversion is
             "TokenConversion: invalid _erc20In token address"
         );
         require(
-            _erc20Out != address(0),
-            "TokenConversion: invalid _erc20Out token address"
+            _optimismPortal2 != address(0),
+            "TokenConversion: invalid _optimismPortal2 address"
         );
         require(
             _startTime < _endTime,
@@ -58,7 +60,7 @@ contract TokenConversion is
         );
 
         erc20In = _erc20In;
-        erc20Out = _erc20Out;
+        optimismPortal2 = _optimismPortal2;
         startTime = _startTime;
         endTime = _endTime;
 
@@ -67,9 +69,9 @@ contract TokenConversion is
     }
 
     /**
-     * @notice Converts all `erc20In` tokens, the caller owns, to `erc20Out`
-     * tokens. For all `erc20In` tokens that is burned the caller receives the
-     * same amount of `erc20Out` tokens. The token conversion rate is 1:1.
+     * @notice Converts all `erc20` tokens, the caller owns, to `l2 erc20`
+     * tokens. For all `erc20` tokens that is burned the caller receives the
+     * same amount of `l2 erc20` tokens. The token conversion rate is 1:1.
      * @dev The caller must approve this contract to spend all their `erc20In`
      * tokens.
      */
@@ -87,27 +89,20 @@ contract TokenConversion is
 
         uint256 erc20InBalance = IERC20(erc20In).balanceOf(sender);
         require(erc20InBalance > 0, "TokenConversion: no tokens to convert");
-
-        uint256 erc20OutBalance = IERC20(erc20Out).balanceOf(address(this));
-        require(
-            erc20OutBalance >= erc20InBalance,
-            "TokenConversion: not enough tokens to convert"
-        );
-
         uint256 allowance = IERC20(erc20In).allowance(sender, address(this));
         require(allowance >= erc20InBalance, "TokenConversion: insufficient allowance");
 
         // transfer and burn erc20In tokens
-        IERC20(erc20In).safeTransferFrom(sender, address(this), erc20InBalance);
         // Do NOT send tokens to address(0).
         // Many ERC20 implementations treat address(0) as an invalid receiver
         // and will revert the transaction to prevent misuse or accidental loss.
         //
         // Instead, use the "dead" address (0x000...dEaD) which is a known burn address
         // with no private key and is used for pseudo-burning tokens.
-        IERC20(erc20In).safeTransfer(0x000000000000000000000000000000000000dEaD, erc20InBalance);
+        IERC20(erc20In).safeTransferFrom(sender, 0x000000000000000000000000000000000000dEaD, erc20InBalance);
 
-        IERC20(erc20Out).safeTransfer(sender, erc20InBalance);
+        // mint l2 token
+        IOptimismPortal2(optimismPortal2).mintTransaction(sender, erc20InBalance);
 
         emit TokenConverted(sender, erc20InBalance);
     }
@@ -131,18 +126,6 @@ contract TokenConversion is
         endTime = _endTime;
 
         emit ConversionPeriodUpdated(_startTime, _endTime);
-    }
-
-    /**
-     * @notice Drains all `erc20Out` tokens from the contract to the caller.
-     * @dev Only the contract admin can call this function.
-     */
-    function drain() external onlyRole(DEFAULT_ADMIN_ROLE) {
-        address sender = _msgSender();
-        uint256 balance = IERC20(erc20Out).balanceOf(address(this));
-        require(balance > 0, "TokenConversion: no tokens to drain");
-
-        IERC20(erc20Out).safeTransfer(sender, balance);
     }
 
     /**

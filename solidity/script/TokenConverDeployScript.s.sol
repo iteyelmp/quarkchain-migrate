@@ -14,12 +14,12 @@ contract TokenConversionScript is Script {
 
     function run() public {
         uint256 START_TIME = block.timestamp;
-        uint256 END_TIME = START_TIME + 120 days;
+        uint256 END_TIME = START_TIME + 365 days;
 
         uint256 deployerKey = vm.envUint("PRIVATE_KEY_DEPLOYER");
         address deployer = vm.addr(deployerKey);
         address oldQKC = vm.envAddress("OLD_QKC_ADDRESS");
-        address newQKC = vm.envAddress("NEW_QKC_ADDRESS");
+        address optimismPortal2 = vm.envAddress("OPTIMISM_PORTAL2");
 
         vm.startBroadcast(deployerKey);
         // impl
@@ -28,7 +28,7 @@ contract TokenConversionScript is Script {
         bytes memory initData = abi.encodeWithSelector(
             TokenConversion.initialize.selector,
             oldQKC,
-            newQKC,
+            optimismPortal2,
             START_TIME,
             END_TIME,
             deployer // defaultAdmin
@@ -44,6 +44,10 @@ contract TokenConversionScript is Script {
         console.log("Implementation:", address(impl));
         console.log("ProxyAdmin:", address(admin));
         console.log("Proxy:", address(proxy));
+
+        TokenConversion tc = TokenConversion(address(proxy));
+        console.log("erc20In:", tc.erc20In());
+        console.log("optimismPortal2:", tc.optimismPortal2());
         vm.stopBroadcast();
     }
 

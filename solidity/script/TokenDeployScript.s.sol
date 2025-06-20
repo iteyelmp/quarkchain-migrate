@@ -15,10 +15,7 @@ contract TokenDeployScript is Script {
         MockToken oldQKC = new MockToken("QuarkChain Old", "oQKC", false);
         oldQKC.mint();
 
-        MockToken newQKC = new MockToken("QuarkChain New", "nQKC", true);
-
         console.log("oldQKC:", address(oldQKC));
-        console.log("newQKC:", address(newQKC));
         vm.stopBroadcast();
     }
 }
