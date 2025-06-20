@@ -3,8 +3,8 @@
     <p class="home-title">QuarkChain ERC20 Token Migration</p>
     <div class="home-message">
       <p>
-        To seamlessly integrate QuarkChain with Ethereum’s rollup infrastructure, the original ERC-20 QKC token (v1)
-        needs to be migrated to a new ERC-20 QKC token (v2) at a 1:1 ratio.
+        To seamlessly integrate QuarkChain with Ethereum’s rollup infrastructure, the original ERC-20 QKC token (L1)
+        needs to be migrated to a new ERC-20 QKC token (L2) at a 1:1 ratio.
       </p>
 
       <p style="margin-top: 15px">
@@ -18,14 +18,14 @@
     </div>
     <div class="home-convert">
       <div class="row-layout">
-        <p class="convert-title">QKC (v1)</p>
+        <p class="convert-title">QKC (L1)</p>
         <div class="convert-value convert-value-old">
           {{ this.oldBalStr }} QKC
         </div>
       </div>
 
       <div class="row-layout convert-margin">
-        <p class="convert-title">QKC (v2)</p>
+        <p class="convert-title">QKC (L2)</p>
         <div class="convert-value convert-value-new">
           {{ this.newBalStr }} QKC
         </div>
@@ -54,7 +54,7 @@
 <script>
 import {ethers} from 'ethers';
 import {connectWallet} from "@/utils/walletManager";
-import {approveErc20, convert, getErc20Allowance, getErc20Balance} from "@/utils/web3";
+import {approveErc20, convert, getErc20Allowance, getErc20Balance, getL2QKCBalance} from "@/utils/web3";
 
 export default {
   data() {
@@ -89,7 +89,7 @@ export default {
         return "Connect Wallet"
       }
       if (this.oldBalance === 0n) {
-        return "You don't have any QKC (v1) tokens";
+        return "You don't have any QKC (L1) tokens";
       }
       if (this.allowance < this.oldBalance) {
         return "Approve";
@@ -116,11 +116,11 @@ export default {
     OldToken() {
       return this.$store.state.chainConfig?.OldToken || null;
     },
-    NewToken() {
-      return this.$store.state.chainConfig?.NewToken || null;
+    L2Rpc() {
+      return this.$store.state.chainConfig?.L2Rpc || null;
     },
     accountAndTokensReady() {
-      return !!(this.account && this.OldToken && this.NewToken);
+      return !!(this.account && this.OldToken && this.L2Rpc);
     }
   },
   watch: {
@@ -146,7 +146,7 @@ export default {
       try {
         const [oldToken, newToken, allowance] = await Promise.all([
           getErc20Balance(this.OldToken, this.account),
-          getErc20Balance(this.NewToken, this.account),
+					getL2QKCBalance(this.L2Rpc, this.account),
           getErc20Allowance(this.OldToken, this.account, this.Conversion)
         ]);
         this.oldBalance = oldToken;

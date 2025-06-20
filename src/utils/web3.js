@@ -24,6 +24,11 @@ export async function getErc20Allowance(tokenAddress, userAddress, convertAddres
     return await contract.allowance(userAddress, convertAddress);
 }
 
+export async function getL2QKCBalance(rpc, userAddress) {
+    const provider = new ethers.JsonRpcProvider(rpc);
+    return await provider.getBalance(userAddress);
+}
+
 export async function approveErc20(tokenAddress, convertAddress) {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
