@@ -1,10 +1,10 @@
 <template>
 	<el-dialog
-			title="Cross-Chain Progress"
 			:visible.sync="visible"
 			width="500px"
 			:close-on-click-modal="false"
 	>
+		<div class="dialog-title">Cross-Chain Progress</div>
 		<div class="step-column" v-for="(step, index) in steps" :key="index">
 			<div class="step-row">
 				<span class="step-label" :class="{'grey': step.status === 'pending'}">{{ step.label }}</span>
@@ -24,7 +24,7 @@
 			</div>
 
 			<span class="tx-hash" v-if="step.hash">
-					Tx Hash: <a class="tx-link" :href="explorerUrl(step.hash)" target="_blank">{{ shortHash(step.hash) }} </a>
+					Tx Hash: <a class="tx-link" :href="explorerUrl(step.hash, step.chain)" target="_blank">{{ shortHash(step.hash) }}</a>
 			</span>
 		</div>
 	</el-dialog>
@@ -37,8 +37,8 @@ export default {
 		return {
 			visible: false,
 			steps: [
-				{ label: "L1 Tx Confirmed", status: "loading", hash: "" },
-				{ label: "L2 Tokens Minted", status: "pending", hash: "" },
+				{ label: "L1 Tx Confirmed", status: "loading", hash: "", chain: "l1" },
+				{ label: "L2 Tokens Minted", status: "pending", hash: "", chain: "l2" },
 			],
 		};
 	},
@@ -50,9 +50,13 @@ export default {
 			this.steps[index].status = status;
 			this.steps[index].hash = hash;
 		},
-		explorerUrl(hash) {
-			// TODO
-			return `https://your-block-explorer/tx/${hash}`;
+		explorerUrl(hash, chain) {
+			if (chain === 'l1') {
+				return `https://sepolia.etherscan.io/tx/${hash}`;
+			} else if (chain === 'l2') {
+				return `https://explorer.beta.testnet.l2.quarkchain.io/tx/${hash}`;
+			}
+			return '#';
 		},
 		shortHash(hash) {
 			return hash.slice(0, 8) + "..." + hash.slice(-6);
@@ -62,6 +66,12 @@ export default {
 </script>
 
 <style scoped>
+.dialog-title {
+	font-size: 28px;
+	color: rgb(23, 34, 162);
+	margin: -15px 0 35px;
+	font-weight: 500;
+}
 .step-column {
 	display: flex;
 	flex-direction: column;
@@ -74,40 +84,58 @@ export default {
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	padding: 0 10px;
+	padding: 0 12px;
 }
 .step-label {
-	font-weight: 400;
 	text-align: left;
 	font-size: 16px;
+	font-weight: 500;
 	color: rgb(24, 30, 169);
 	font-family: AktivGroteskEx;
 }
 .grey {
 	color: grey;
 }
+
 .step-icon {
-	font-size: 18px;
-	margin-right: 8px;
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	background-color: #f0f0f0;
 }
 .loading {
-	color: rgb(23, 34, 162)
+	color: rgb(23, 34, 162);
 }
 .success {
 	color: #67c23a;
+	background-color: #f0f9eb;
 }
+
 .error {
 	color: #f56c6c;
+	background-color: #fef0f0;
 }
 
 .tx-hash {
-	padding: 0 10px 0 30px;
-	margin-top: 5px;
-	font-size: 12px;
+	padding: 0 12px 0 34px;
+	margin-top: 4px;
+	font-size: 13px;
+	color: #606266;
+	word-break: break-all;
 }
+
 .tx-link {
 	margin-left: 8px;
 	color: #409EFF;
+	text-decoration: none;
+}
+.tx-link:hover {
+	text-decoration: underline;
+	background: none;
 }
 </style>
 
@@ -115,4 +143,9 @@ export default {
 /deep/ .el-dialog__headerbtn:hover .el-dialog__close {
 	color: rgb(23, 34, 162) !important;
 }
+
+/deep/ .el-dialog {
+	max-width: 90vw;
+}
 </style>
+
