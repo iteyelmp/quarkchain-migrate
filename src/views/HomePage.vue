@@ -48,13 +48,16 @@
         </el-button>
       </div>
     </div>
-  </div>
+
+		<cross-chain-dialog ref="progressDialog" />
+	</div>
 </template>
 
 <script>
 import {ethers} from 'ethers';
 import {connectWallet} from "@/utils/walletManager";
-import {approveErc20, convert, getErc20Allowance, getErc20Balance, getL2QKCBalance} from "@/utils/web3";
+import {approveErc20, convert, getErc20Allowance, getErc20Balance, getL2QKCBalance, waitForL2Mint} from "@/utils/web3";
+import CrossChainDialog from "@/components/CrossChainDialog.vue";
 
 export default {
   data() {
@@ -66,6 +69,9 @@ export default {
       isLoading: false
     }
   },
+	components: {
+		CrossChainDialog
+	},
   computed: {
     account() {
       return this.$store.state.account;
@@ -156,6 +162,17 @@ export default {
         this.isFetching = false;
       }
     },
+		async convertAndWait() {
+			const tx = await convert(this.Conversion);
+
+			this.$refs.progressDialog.show(true);
+			const txResult = await tx.wait();
+
+			this.$refs.progressDialog.updateStep(0, 'done', txResult.hash);
+			this.$refs.progressDialog.updateStep(1, 'loading', '');
+			const hash = await waitForL2Mint(this.L2Rpc, this.account);
+			this.$refs.progressDialog.updateStep(1, 'done', hash);
+		},
     async clickButton() {
       if (!this.account) {
         await connectWallet(this.$message);
@@ -189,7 +206,7 @@ export default {
       }
 
       await runWithLoading(
-          () => convert(this.Conversion),
+          () => this.convertAndWait(),
           "Conversion completed successfully!"
       );
     }

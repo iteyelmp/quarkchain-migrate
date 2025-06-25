@@ -93,18 +93,34 @@ contract TokenConversion is
         require(allowance >= erc20InBalance, "TokenConversion: insufficient allowance");
 
         // transfer and burn erc20In tokens
+        IERC20(erc20In).safeTransferFrom(sender, address(this), erc20InBalance);
         // Do NOT send tokens to address(0).
         // Many ERC20 implementations treat address(0) as an invalid receiver
         // and will revert the transaction to prevent misuse or accidental loss.
         //
         // Instead, use the "dead" address (0x000...dEaD) which is a known burn address
         // with no private key and is used for pseudo-burning tokens.
-        IERC20(erc20In).safeTransferFrom(sender, 0x000000000000000000000000000000000000dEaD, erc20InBalance);
+        //  TODO
+        //  IERC20(erc20In).safeTransfer(0x000000000000000000000000000000000000dEaD, erc20InBalance);
+        //  TODO
+        //  IERC20(erc20In).safeTransferFrom(sender, 0x000000000000000000000000000000000000dEaD, erc20InBalance);
 
         // mint l2 token
         IOptimismPortal2(optimismPortal2).mintTransaction(sender, erc20InBalance);
 
         emit TokenConverted(sender, erc20InBalance);
+    }
+
+    /**
+     * @notice Drains all `erc20Out` tokens from the contract to the caller.
+     * @dev Only the contract admin can call this function.
+     */
+    function drain() external onlyRole(DEFAULT_ADMIN_ROLE) {
+        address sender = _msgSender();
+        uint256 balance = IERC20(erc20In).balanceOf(address(this));
+        require(balance > 0, "TokenConversion: no tokens to drain");
+
+        IERC20(erc20In).safeTransfer(sender, balance);
     }
 
     /**
