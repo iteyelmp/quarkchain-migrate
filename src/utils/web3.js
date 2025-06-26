@@ -43,7 +43,8 @@ export async function convert(convertAddress) {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(convertAddress, CONVERT_ABI, signer);
-    return contract.convert();
+    const tx = await contract.convert();
+    return await tx.wait();
 }
 
 const INTERVAL = 3000;

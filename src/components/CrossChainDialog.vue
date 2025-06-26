@@ -1,151 +1,267 @@
 <template>
 	<el-dialog
 			:visible.sync="visible"
+			:show-close="false"
 			width="500px"
-			:close-on-click-modal="false"
 	>
-		<div class="dialog-title">Cross-Chain Progress</div>
-		<div class="step-column" v-for="(step, index) in steps" :key="index">
-			<div class="step-row">
-				<span class="step-label" :class="{'grey': step.status === 'pending'}">{{ step.label }}</span>
+		<div class="dialog-header">
+			<div class="dialog-title">Migrate {{ this.amount }} QKC</div>
+			<i class="el-icon-close close-icon close-btn" @click="visible = false"></i>
+		</div>
 
-				<template v-if="step.status === 'pending'">
-					<i class="el-icon-time step-icon grey"></i>
-				</template>
-				<template v-if="step.status === 'loading'">
-					<i class="el-icon-loading step-icon loading"></i>
-				</template>
-				<template v-else-if="step.status === 'done'">
-					<i class="el-icon-circle-check step-icon success"></i>
-				</template>
-				<template v-else-if="step.status === 'error'">
-					<i class="el-icon-circle-close step-icon error"></i>
-				</template>
+		<div class="step-column">
+			<div class="step-row" :class="{ success: steps > 1 }">
+				<div class="step-label-layout">
+					<img class="step-icon" src="@/assets/l1.svg"/>
+					<span class="step-label">Step 1: Approve QKC</span>
+				</div>
+				<el-button
+						class="convert-button"
+						@click="clickApprove"
+						:loading="loading === 1"
+						:disabled="steps !== 1">
+					Approve
+				</el-button>
 			</div>
 
-			<span class="tx-hash" v-if="step.hash">
-					Tx Hash: <a class="tx-link" :href="explorerUrl(step.hash, step.chain)" target="_blank">{{ shortHash(step.hash) }}</a>
-			</span>
+			<div class="step-row" :class="{ success: steps > 2 }">
+				<div class="step-label-layout">
+					<img class="step-icon" src="@/assets/l1.svg"/>
+					<span class="step-label">Step 2: Submit Migration (L1)</span>
+				</div>
+				<el-button
+						class="convert-button"
+						@click="clickMigration"
+						:loading="loading === 2"
+						:disabled="steps !== 2">
+					Migration
+				</el-button>
+			</div>
+
+			<div class="step-row" :class="{ success: steps === 3 && isFinish}">
+				<div class="step-label-layout">
+					<img class="step-icon" src="@/assets/logo.png"/>
+					<span class="step-label">Step 3: Wait ~3 mins for L2 confirmation</span>
+				</div>
+
+				<i v-if="steps === 3 && !isFinish" class="el-icon-loading wait-loading"></i>
+				<font-awesome-icon v-if="isFinish" icon="check-circle" class="wait-finish" />
+				<div v-else></div>
+			</div>
 		</div>
 	</el-dialog>
 </template>
 
 <script>
+import {approveErc20, convert, getErc20Allowance, waitForL2Mint} from "@/utils/web3";
+import {ethers} from "ethers";
+
 export default {
 	name: "CrossChainDialog",
 	data() {
 		return {
 			visible: false,
-			steps: [
-				{ label: "L1 Tx Confirmed", status: "loading", hash: "", chain: "l1" },
-				{ label: "L2 Tokens Minted", status: "pending", hash: "", chain: "l2" },
-			],
+			steps: 1,
+			isFinish: false,
+			loading: 0,
+
+			amount: 0n,
+			balance: 0n,
+			account: null,
+			oldToken: null,
+			conversion: null,
+			l2Rpc: null,
 		};
 	},
 	methods: {
-		show() {
+		formatAmount(amount) {
+			return ethers.parseEther(amount.toString());
+		},
+		show({amount, balance, account, conversion, oldToken, l2Rpc}) {
+			this.amount = amount;
+			this.balance = balance;
+			this.account = account;
+			this.conversion = conversion;
+			this.oldToken = oldToken;
+			this.l2Rpc = l2Rpc;
+
 			this.visible = true;
+			this.loadData();
 		},
-		updateStep(index, status, hash = "") {
-			this.steps[index].status = status;
-			this.steps[index].hash = hash;
+		async loadData() {
+			const allowance = await getErc20Allowance(this.oldToken, this.account, this.conversion);
+			if (allowance >= this.formatAmount(this.amount)) this.steps = 2;
 		},
-		explorerUrl(hash, chain) {
-			if (chain === 'l1') {
-				return `https://sepolia.etherscan.io/tx/${hash}`;
-			} else if (chain === 'l2') {
-				return `https://explorer.beta.testnet.l2.quarkchain.io/tx/${hash}`;
+		async clickApprove() {
+			this.loading = 1;
+			try {
+				await approveErc20(this.oldToken, this.conversion);
+				const allowance = await getErc20Allowance(this.oldToken, this.account, this.conversion);
+				if (allowance >= this.formatAmount(this.amount)) {
+					this.steps = 2;
+					this.$message.success("Approved successfully.");
+				} else {
+					this.$message.error("Approved amount < migration amount.");
+				}
+			} catch (e) {
+				this.$message.error("Approve failed.");
 			}
-			return '#';
+			this.loading = 0;
 		},
-		shortHash(hash) {
-			return hash.slice(0, 8) + "..." + hash.slice(-6);
+		async clickMigration() {
+			this.loading = 2;
+			try {
+				await convert(this.conversion);
+				this.steps = 3;
+				this.$message.success("Migration submitted.");
+				this.l2Mint();
+			} catch (e) {
+				this.$message.error("Migration failed.");
+			}
+			this.loading = 0;
+		},
+		async l2Mint() {
+			this.loading = 3;
+			try {
+				await waitForL2Mint(this.l2Rpc, this.account);
+				this.isFinish = true;
+				this.$message.success("L2 mint completed.");
+			} catch (e) {
+				this.$message.error("L2 mint timeout.");
+			}
+			this.loading = 0;
 		},
 	},
 };
 </script>
 
-<style scoped>
-.dialog-title {
-	font-size: 28px;
-	color: rgb(23, 34, 162);
-	margin: -15px 0 35px;
-	font-weight: 500;
+<style scoped lang="scss">
+.dialog-header {
+	margin-top: -40px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+
+	.dialog-title {
+		font-size: 28px;
+		color: rgb(23, 34, 162);
+		font-weight: 500;
+		text-align: left;
+	}
+
+	.close-btn {
+		font-size: 20px;
+		cursor: pointer;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: #f0f0f0;
+	}
+	.close-btn:hover {
+		color: rgb(23, 34, 162);
+		opacity: 0.8;
+	}
 }
+
 .step-column {
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-start;
-	align-items: flex-start;
-	margin-bottom: 25px;
+	justify-content: center;
+	align-items: center;
+	margin-top: 30px;
+	gap: 15px;
 }
+
 .step-row {
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	padding: 0 12px;
-}
-.step-label {
-	text-align: left;
-	font-size: 16px;
-	font-weight: 500;
-	color: rgb(24, 30, 169);
-	font-family: AktivGroteskEx;
-}
-.grey {
-	color: grey;
-}
-
-.step-icon {
-	width: 25px;
-	height: 25px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 14px;
-	background-color: #f0f0f0;
-}
-.loading {
-	color: rgb(23, 34, 162);
+	background-color: #f4f4f5;
+	border-radius: 8px;
+	padding: 8px 12px;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
 }
 .success {
-	color: #67c23a;
-	background-color: #f0f9eb;
+	background: rgba(103, 194, 58, 0.1);
+	border-radius: 8px;
 }
 
-.error {
-	color: #f56c6c;
-	background-color: #fef0f0;
+.step-label-layout {
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
+
+	.step-icon {
+		width: 2rem;
+		height: 2rem;
+		border-radius: 10px;
+	}
+	.step-label {
+		text-align: left;
+		font-size: 14px;
+		font-weight: 500;
+		color: rgb(24, 30, 169);
+		font-family: AktivGroteskEx;
+		margin-left: 8px;
+	}
 }
 
-.tx-hash {
-	padding: 0 12px 0 34px;
-	margin-top: 4px;
+
+.convert-button {
+	cursor: pointer;
+	width: 25%;
+	background: rgb(24, 30, 169);
+	border: none;
 	font-size: 13px;
-	color: #606266;
-	word-break: break-all;
+	line-height: 13px;
+	color: rgb(255, 255, 255);
+	border-radius: 4px;
+}
+.convert-button:enabled:hover {
+	background: rgba(24, 30, 169, 0.7);
+	color: rgb(255, 255, 255);
+	border: 0;
+}
+.convert-button:disabled {
+	background: rgba(24, 30, 169, 0.4) !important;
+	color: rgba(255, 255, 255, 0.8) !important;
+	cursor: not-allowed;
 }
 
-.tx-link {
-	margin-left: 8px;
-	color: #409EFF;
-	text-decoration: none;
+.wait-loading {
+	font-size: 20px;
+	margin-right: 40px;
+	color: rgb(23, 34, 162);
 }
-.tx-link:hover {
-	text-decoration: underline;
-	background: none;
+.wait-finish {
+	font-size: 20px;
+	margin-right: 40px;
+	color: #67c23a;
+	animation: fadeIn 0.4s ease-in;
+}
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
 }
 </style>
 
 <style scoped>
-/deep/ .el-dialog__headerbtn:hover .el-dialog__close {
-	color: rgb(23, 34, 162) !important;
-}
-
 /deep/ .el-dialog {
-	max-width: 90vw;
+	border-radius: 8px;
 }
 </style>
 
