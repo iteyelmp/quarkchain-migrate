@@ -75,7 +75,7 @@ contract TokenConversion is
      * @dev The caller must approve this contract to spend all their `erc20In`
      * tokens.
      */
-    function convert() external whenNotPaused {
+    function convert(uint256 _amount) external whenNotPaused {
         address sender = _msgSender();
 
         require(
@@ -87,13 +87,13 @@ contract TokenConversion is
             "TokenConversion: conversion period has ended"
         );
 
-        uint256 erc20InBalance = IERC20(erc20In).balanceOf(sender);
-        require(erc20InBalance > 0, "TokenConversion: no tokens to convert");
+        uint256 totalBalance = IERC20(erc20In).balanceOf(sender);
+        require(totalBalance >= _amount, "TokenConversion: no enough tokens to convert");
         uint256 allowance = IERC20(erc20In).allowance(sender, address(this));
-        require(allowance >= erc20InBalance, "TokenConversion: insufficient allowance");
+        require(allowance >= _amount, "TokenConversion: insufficient allowance");
 
         // transfer and burn erc20In tokens
-        IERC20(erc20In).safeTransferFrom(sender, address(this), erc20InBalance);
+        IERC20(erc20In).safeTransferFrom(sender, address(this), _amount);
         // Do NOT send tokens to address(0).
         // Many ERC20 implementations treat address(0) as an invalid receiver
         // and will revert the transaction to prevent misuse or accidental loss.
@@ -106,9 +106,9 @@ contract TokenConversion is
         //  IERC20(erc20In).safeTransferFrom(sender, 0x000000000000000000000000000000000000dEaD, erc20InBalance);
 
         // mint l2 token
-        IOptimismPortal2(optimismPortal2).mintTransaction(sender, erc20InBalance);
+        IOptimismPortal2(optimismPortal2).mintTransaction(sender, _amount);
 
-        emit TokenConverted(sender, erc20InBalance);
+        emit TokenConverted(sender, _amount);
     }
 
     /**

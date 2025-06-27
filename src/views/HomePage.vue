@@ -47,7 +47,7 @@
 			</div>
 		</div>
 
-		<cross-chain-dialog ref="progressDialog"/>
+		<cross-chain-dialog ref="progressDialog" @finish="onFinish"/>
 	</div>
 </template>
 
@@ -165,6 +165,9 @@ export default {
 				oldToken: this.OldToken,
 				l2Rpc: this.L2Rpc
 			});
+		},
+		onFinish() {
+			this.fetchBalances();
 		}
 	},
 	mounted() {

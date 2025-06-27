@@ -45,7 +45,7 @@
 				</div>
 
 				<i v-if="steps === 3 && !isFinish" class="el-icon-loading wait-loading"></i>
-				<font-awesome-icon v-if="isFinish" icon="check-circle" class="wait-finish" />
+				<font-awesome-icon v-else-if="isFinish" icon="check-circle" class="wait-finish" />
 				<div v-else></div>
 			</div>
 		</div>
@@ -111,7 +111,7 @@ export default {
 		async clickMigration() {
 			this.loading = 2;
 			try {
-				await convert(this.conversion);
+				await convert(this.conversion, this.amount);
 				this.steps = 3;
 				this.$message.success("Migration submitted.");
 				this.l2Mint();
@@ -121,15 +121,14 @@ export default {
 			this.loading = 0;
 		},
 		async l2Mint() {
-			this.loading = 3;
 			try {
 				await waitForL2Mint(this.l2Rpc, this.account);
+				this.$emit('finish')
 				this.isFinish = true;
 				this.$message.success("L2 mint completed.");
 			} catch (e) {
 				this.$message.error("L2 mint timeout.");
 			}
-			this.loading = 0;
 		},
 	},
 };
@@ -238,12 +237,12 @@ export default {
 
 .wait-loading {
 	font-size: 20px;
-	margin-right: 40px;
+	margin-right: 10px;
 	color: rgb(23, 34, 162);
 }
 .wait-finish {
 	font-size: 20px;
-	margin-right: 40px;
+	margin-right: 10px;
 	color: #67c23a;
 	animation: fadeIn 0.4s ease-in;
 }

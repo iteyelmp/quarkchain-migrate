@@ -7,7 +7,7 @@ const ERC20_ABI = [
 ];
 
 const CONVERT_ABI = [
-    "function convert() external",
+    "function convert(uint256 _amount) external",
 ];
 
 const MAX_UINT = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
@@ -39,11 +39,11 @@ export async function approveErc20(tokenAddress, convertAddress) {
     return await tx.wait();
 }
 
-export async function convert(convertAddress) {
+export async function convert(convertAddress, amount) {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(convertAddress, CONVERT_ABI, signer);
-    const tx = await contract.convert();
+    const tx = await contract.convert(ethers.parseEther(amount));
     return await tx.wait();
 }
 
