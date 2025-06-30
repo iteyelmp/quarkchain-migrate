@@ -143,17 +143,18 @@ export default {
 	align-items: flex-start;
 
 	.dialog-title {
-		font-size: 28px;
+		font-size: 24px;
 		color: rgb(23, 34, 162);
 		font-weight: 500;
 		text-align: left;
+		font-family: CoinbaseSansBlob;
 	}
 
 	.close-btn {
-		font-size: 20px;
+		font-size: 18px;
 		cursor: pointer;
-		width: 32px;
-		height: 32px;
+		width: 30px;
+		height: 30px;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
@@ -208,8 +209,8 @@ export default {
 		font-size: 14px;
 		font-weight: 500;
 		color: rgb(24, 30, 169);
-		font-family: AktivGroteskEx;
 		margin-left: 8px;
+		font-family: CoinbaseDisplay;
 	}
 }
 
@@ -223,6 +224,7 @@ export default {
 	line-height: 13px;
 	color: rgb(255, 255, 255);
 	border-radius: 4px;
+	font-family: CoinbaseSansBlob;
 }
 .convert-button:enabled:hover {
 	background: rgba(24, 30, 169, 0.7);

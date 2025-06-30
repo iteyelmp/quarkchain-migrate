@@ -188,40 +188,25 @@ export default {
 }
 
 .home-title {
-	position: relative;
-	font-family: AktivGroteskEx;
-	font-weight: 300;
-	font-size: 14px;
+	font-weight: 400;
+	font-size: 24px;
 	line-height: 15px;
 	letter-spacing: 2px;
-	color: #1722a2;
-	text-transform: uppercase;
-	padding-left: 150px;
-	margin-bottom: 30px;
-	display: flex;
-	-webkit-box-align: center;
-	align-items: center;
+	margin: 0 auto 25px;
+	color: #181ea9;
+	font-family: CoinbaseSansBlob;
 }
 
-.home-title::before {
-	content: "";
-	position: absolute;
-	top: 6px;
-	left: 0px;
-	width: 142px;
-	height: 1px;
-	background: rgb(23, 34, 162);
-}
 
 .home-message {
 	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
+	font-weight: 300;
+	font-size: 15px;
 	line-height: 19px;
-	color: #181ea9;
-	opacity: 0.8;
-	margin-bottom: 3px;
+	color: #1722a2;
+	opacity: 0.7;
 	text-align: left;
+	font-family: CoinbaseSans;
 }
 
 .home-convert {
@@ -238,11 +223,10 @@ export default {
 	}
 
 	.convert-title {
-		font-family: AktivGroteskEx;
-		font-weight: bold;
 		color: rgb(23, 34, 162);
 		font-size: 14px;
 		line-height: 14px;
+		font-family: CoinbaseSansBlob;
 	}
 
 	.convert-input {
@@ -253,12 +237,14 @@ export default {
 		font-size: 14px;
 		line-height: 14px;
 		border-color: rgba(24, 30, 169, 0.3);
+		font-family: CoinbaseDisplay;
 	}
 	.convert-input ::v-deep .el-input-group__append {
 		background-color: transparent;
 		color: rgb(24, 30, 169);
 		font-weight: 500;
 		border-color: rgba(24, 30, 169, 0.3);
+		font-family: CoinbaseDisplay;
 	}
 
 
@@ -271,6 +257,7 @@ export default {
 		line-height: 14px;
 		color: rgb(255, 255, 255);
 		border-radius: 4px;
+		font-family: CoinbaseSansBlob;
 	}
 	.convert-button:hover {
 		background-color: rgba(24, 30, 169, 0.7);
@@ -289,16 +276,17 @@ export default {
 		color: red;
 		width: 85%;
 		margin: 15px auto 0;
+		font-family: CoinbaseDisplay;
 	}
 }
 
 
 .show-more {
-	font-weight: 500;
 	font-size: 18px;
 	color: rgb(24, 30, 169);
 	text-align: left;
 	margin: 38px 0 15px;
+	font-family: CoinbaseSansBlob;
 }
 
 .convert-detail {
@@ -324,6 +312,7 @@ export default {
 		font-size: 13px;
 		font-weight: 500;
 		opacity: 0.8;
+		font-family: CoinbaseSans;
 	}
 
 	.detail-value {
@@ -331,16 +320,14 @@ export default {
 		line-height: 18px;
 		font-size: 13px;
 		font-weight: 400;
+		font-family: CoinbaseSans;
 	}
-
 	.convert-value-old {
 		color: #F4A261;
 	}
-
 	.convert-value-new {
 		color: #3B4BFF;
 	}
-
 	.convert-value-address {
 		color: #666;
 		font-family: "Roboto Mono", monospace;
