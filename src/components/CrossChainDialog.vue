@@ -2,7 +2,7 @@
 	<el-dialog
 			:visible.sync="visible"
 			:show-close="false"
-			width="500px"
+			custom-class="responsive-dialog"
 	>
 		<div class="dialog-header">
 			<div class="dialog-title">Migrate {{ this.amount }} QKC</div>
@@ -258,11 +258,72 @@ export default {
 		transform: scale(1);
 	}
 }
+
+
+@media screen and (max-width: 500px) {
+	.dialog-header {
+		margin-top: -40px;
+
+		.dialog-title {
+			font-size: 16px;
+		}
+
+		.close-btn {
+			font-size: 16px;
+			width: 24px;
+			height: 24px;
+		}
+	}
+
+	.step-column {
+		margin-top: 25px;
+		gap: 15px;
+	}
+
+	.step-label-layout {
+
+		.step-icon {
+			width: 1.8rem;
+			height: 1.8rem;
+			border-radius: 10px;
+		}
+		.step-label {
+			font-size: 13px;
+		}
+	}
+
+
+	.convert-button {
+		width: 25%;
+		font-size: 12px;
+		line-height: 12px;
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	.wait-loading {
+		font-size: 18px;
+	}
+	.wait-finish {
+		font-size: 18px;
+	}
+}
 </style>
 
-<style scoped>
+
+<style>
+.el-dialog.responsive-dialog {
+	max-width: 500px;
+}
+
 /deep/ .el-dialog {
 	border-radius: 8px;
+}
+
+@media screen and (max-width: 500px) {
+	.el-dialog.responsive-dialog {
+		width: 95% !important;
+	}
 }
 </style>
 

@@ -350,36 +350,64 @@ export default {
 	}
 
 	.home-title {
-		font-size: 16px;
-		line-height: 20px;
-		margin-bottom: 14px;
+		font-size: 20px;
+		margin-bottom: 15px;
 	}
-
 	.home-message {
-		padding: 15px 24px;
-		font-size: 14px;
-		margin-top: 25px;
+		font-size: 13px;
 	}
 
 	.home-convert {
-		padding: 15px 24px;
+		padding: 15px;
+
+		.row-layout {
+			gap: 8px;
+		}
 
 		.convert-title {
-			font-size: 15px;
+			font-size: 12px;
+			line-height: 16px;
+			width: 20%;
 		}
 
-		.convert-value {
-			font-size: 14px;
+		.convert-input {
+			flex: 1;
 		}
+		.convert-input ::v-deep .el-input__inner {
+			font-size: 12px;
+			line-height: 12px;
+		}
+		.convert-input ::v-deep .el-input-group__append {
+			font-size: 12px;
+			line-height: 12px;
+			padding-left: 8px;
+			padding-right: 8px;
+			font-weight: 400;
+		}
+
 
 		.convert-button {
-			width: 100%;
-			font-weight: 350;
+			width: 20%;
 			font-size: 12px;
-			line-height: 15px;
-			letter-spacing: 1px;
-			padding: 16px 5px;
+			line-height: 12px;
+			padding-left: 0px;
+			padding-right: 0px;
 		}
+
+		.convert-note {
+			width: 90%;
+			margin: 15px auto 0;
+		}
+	}
+
+
+	.show-more {
+		font-size: 15px;
+		margin: 40px 0 15px;
+	}
+
+	.convert-detail {
+		padding: 15px;
 	}
 }
 </style>s
