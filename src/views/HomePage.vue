@@ -13,6 +13,7 @@
 				<el-input
 						v-model="input"
 						type="number"
+						step="any"
 						placeholder="Enter amount"
 						class="convert-input"
 				>

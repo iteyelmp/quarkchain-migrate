@@ -45,7 +45,10 @@ export async function convert(convertAddress, amount) {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(convertAddress, CONVERT_ABI, signer);
-    const tx = await contract.convert(ethers.parseEther(amount));
+    const estimatedGas = await contract.convert.estimateGas(ethers.parseEther(amount));
+    const tx = await contract.convert(ethers.parseEther(amount), {
+        gasLimit: estimatedGas * 15n / 10n
+    });
     return await tx.wait();
 }
 
