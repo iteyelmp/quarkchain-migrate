@@ -12,7 +12,9 @@ const CONVERT_ABI = [
 
 const MAX_UINT = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
-const SYSTEM_SENDER = "0xdeaddeaddeaddeaddeaddeaddeaddeaddeadffff".toLowerCase();
+function isSystemSender(address) {
+    return address?.toLowerCase().startsWith("0xdeaddeaddeaddeaddeaddeaddeaddead");
+}
 
 export async function getErc20Balance(tokenAddress, userAddress) {
     const provider = new ethers.BrowserProvider(window.ethereum);
@@ -71,7 +73,7 @@ export async function waitForL2Mint(rpc, userAddress) {
                 const tx = await provider.getTransaction(txHash);
                 const from = tx.from?.toLowerCase();
                 const to = tx.to?.toLowerCase();
-                if (from === SYSTEM_SENDER && to === user) {
+                if (isSystemSender(from) && to === user) {
                     console.log(`L2 Mint found at block ${i}, tx: ${tx.hash}`);
                     return tx.hash;
                 }

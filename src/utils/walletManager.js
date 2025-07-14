@@ -2,7 +2,7 @@
 import store from '@/store';
 import { chains } from '@/store/state';
 
-const targetChain = 3151908;
+const targetChain = 11155111;
 const chainID = `0x${targetChain.toString(16)}`;
 
 export async function connectWallet(message) {
