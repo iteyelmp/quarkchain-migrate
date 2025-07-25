@@ -13,6 +13,7 @@ const CONVERT_ABI = [
 const MAX_UINT = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
 function isSystemSender(address) {
+    console.log(address);
     return address?.toLowerCase().startsWith("0xdeaddeaddeaddeaddeaddeaddeaddead");
 }
 
