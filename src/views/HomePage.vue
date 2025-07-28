@@ -8,7 +8,7 @@
 
 		<div class="home-convert">
 			<div class="row-layout">
-				<p class="convert-title">Migrate Amount:</p>
+				<p class="convert-title">Amount to Migrate:</p>
 
 				<el-input
 						v-model="input"
