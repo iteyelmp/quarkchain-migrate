@@ -3,7 +3,7 @@
 		<p class="home-title">QuarkChain Token Migration</p>
 		<div class="home-message">
 			To seamlessly integrate QuarkChain with Ethereum’s rollup infrastructure, the original ERC-20 QKC token (L1)
-			needs to be migrated to a new ERC-20 QKC token (L2) at a 1:1 ratio.
+			needs to be migrated to a new native token (L2) at a 1:1 ratio.
 		</div>
 
 		<div class="home-convert">
